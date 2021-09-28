@@ -21,6 +21,5 @@ FactoryBot.define do
       cidr { "91.109.217.0/24,91.109.219.0/24" }
       date_cidr { Date.today }
     end
-
   end
 end

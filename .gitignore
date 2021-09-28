@@ -32,7 +32,9 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 /config/database.yml
+
 /results/*
+!/results/.keep
 
 /public/packs
 /public/packs-test
