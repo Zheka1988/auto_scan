@@ -164,4 +164,52 @@ RSpec.describe CountriesController, type: :controller do
     end
 
   end
+
+  describe 'GET #scan_open_ports' do
+    context 'if cidr for country not nul' do
+      let(:country_with_cidr) { create :country, :with_cidr }
+      before { get :scan_open_ports, params: { id: country_with_cidr } }
+
+      it 'assigns the requested country to @country' do
+        expect(assigns(:country)).to eq country_with_cidr  
+      end
+
+      it 'change date_last_nmap_scan for country' do
+        country_with_cidr.reload
+        expect(country_with_cidr.date_last_nmap_scan).to eq Date.today
+      end
+
+      it 'change status_nmap_scan for country on In process' do
+        country_with_cidr.reload
+        expect(country_with_cidr.status_nmap_scan).to eq "In process"
+      end
+      
+      it 'render view scan_open_ports' do
+        expect(response).to render_template :scan_open_ports
+      end
+    end
+
+    context 'if cidr for country eq nul' do
+      before { get :scan_open_ports, params: { id: country } }
+      
+      it 'assigns the requested country to @country' do
+        expect(assigns(:country)).to eq country  
+      end
+
+      it 'not change date_last_nmap_scan for country' do
+        country.reload
+        expect(country.date_last_nmap_scan).to be_nil 
+      end
+
+      it 'not change status_nmap_scan for country on In process' do
+        country.reload
+        expect(country.status_nmap_scan).to eq "Not started"
+      end
+
+      it 'render view scan_open_ports' do
+        expect(response).to render_template :scan_open_ports
+      end
+
+    end
+  end
 end

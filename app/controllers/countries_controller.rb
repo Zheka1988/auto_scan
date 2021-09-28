@@ -1,5 +1,5 @@
 class CountriesController < ApplicationController
-  before_action :load_country, only: [:show, :edit, :update, :destroy, :get_cidr]
+  before_action :load_country, only: [:show, :edit, :update, :destroy, :get_cidr, :scan_open_ports]
   
   def index
     @countries = Country.all
@@ -46,6 +46,15 @@ class CountriesController < ApplicationController
       flash[:alert] = "CIDR for #{@country.name} was not download."
     elsif message.include?("Rescued")
       flash[:alert] = "#{message}"
+    end
+  end
+  
+  def scan_open_ports
+    if @country.cidr && @country.date_cidr
+      @country.run_nmap("scan_open_ports")
+      flash[:notice] =  "Masscan for #{@country.name} has been launched."
+    else
+      flash[:notice] =  "CIDR for #{@country.name} was not found. First download cidr."
     end
   end
 

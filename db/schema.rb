@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_15_095856) do
+ActiveRecord::Schema.define(version: 2021_09_24_115456) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,5 +22,8 @@ ActiveRecord::Schema.define(version: 2021_09_15_095856) do
     t.date "date_cidr"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.date "date_last_nmap_scan"
+    t.string "status_nmap_scan", default: "Not started"
   end
+
 end

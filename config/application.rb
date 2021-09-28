@@ -1,6 +1,8 @@
 require_relative "boot"
 
 require "rails/all"
+require 'nmap/program'
+require 'nmap/xml'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -19,6 +21,8 @@ module AutoScan
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
   
+    config.active_job.queue_adapter = :sidekiq
+    
     config.generators do |g|
       g.test_framework :rspec,
                        view_specs: false,
