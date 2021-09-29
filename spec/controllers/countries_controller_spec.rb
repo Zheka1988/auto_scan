@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe CountriesController, type: :controller do
   let(:country) { create :country }
+  let(:user) { create :user }
 
   describe 'GET #index' do
     let(:countries) { create_list :country, 3}
@@ -29,6 +30,8 @@ RSpec.describe CountriesController, type: :controller do
   end
 
   describe 'GET #new' do
+    before { sign_in(user) }
+
     before { get :new}
 
     it 'assigns a new Country to @country' do
@@ -41,6 +44,8 @@ RSpec.describe CountriesController, type: :controller do
   end
 
   describe 'GET #edit' do
+    before { sign_in(user) }
+
     before { get :edit, params: { id: country } }
 
     it 'assigns the requested country to @country' do
@@ -53,6 +58,7 @@ RSpec.describe CountriesController, type: :controller do
   end
 
   describe 'POST #create' do
+    before { sign_in(user) }
     context 'With valid attribute' do
       it 'saves a new country in the database' do
         expect { post :create, params: { country: attributes_for(:country) } }.to change(Country, :count).by(1)
@@ -77,6 +83,7 @@ RSpec.describe CountriesController, type: :controller do
   end
 
   describe 'PATCH #update' do
+    before { sign_in(user) }
     context 'With valid attribute' do
       it 'assigns the requested country to @country' do
         patch :update, params: { id: country, country: attributes_for(:country) }
@@ -113,6 +120,8 @@ RSpec.describe CountriesController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
+    before { sign_in(user) }
+
     let!(:country) { create :country }
 
     it 'deletes the country' do
@@ -126,6 +135,7 @@ RSpec.describe CountriesController, type: :controller do
   end
 
   describe 'GET #get_cidr' do
+    before { sign_in(user) }
     context 'if cidr exist on site http://www.iwik.org/ipcountry/' do
       before { get :get_cidr, params: { id: country } }
 
@@ -166,6 +176,7 @@ RSpec.describe CountriesController, type: :controller do
   end
 
   describe 'GET #scan_open_ports' do
+    before { sign_in(user) }
     context 'if cidr for country not nul' do
       let(:country_with_cidr) { create :country, :with_cidr }
       before { get :scan_open_ports, params: { id: country_with_cidr } }

@@ -1,4 +1,6 @@
 class CountriesController < ApplicationController
+  before_action :authenticate_user!, except: [:index, :show]
+  
   before_action :load_country, only: [:show, :edit, :update, :destroy, :get_cidr, :scan_open_ports]
   
   def index
