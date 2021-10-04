@@ -1,0 +1,3 @@
+<% if flash[:notice] || flash[:alert] %>
+    $(".flash-messages").html("<%= j render partial: 'shared/flashes' %>");
+<% end %>

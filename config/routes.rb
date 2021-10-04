@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     member do
       get 'get_cidr'
       get 'scan_open_ports'
+      get 'download_cidr'
     end
   end
 end

@@ -42,6 +42,21 @@ class Country < ApplicationRecord
     end
   end
 
+  def generate_cidr_file
+    if self.cidr && self.date_cidr
+      path =  "#{Rails.root}/app/assets/downloads/#{self.short_name}.cidr"
+      File.open(path, "w+") do |f|
+        f.write "#{self.date_cidr}\n"
+        self.cidr.split(",").each do |cidr|
+          f.write "#{cidr}\n"
+        end
+      end
+      "Yes"
+    else
+      "No"
+    end
+  end
+
   def run_nmap(type_scan)
     self.date_last_nmap_scan = Date.today
     self.status_nmap_scan = self.status[:in_process]

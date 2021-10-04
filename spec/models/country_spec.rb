@@ -19,6 +19,27 @@ RSpec.describe Country, type: :model do
     end
   end
 
+  describe 'generate_cidr_file' do
+    let(:country) { create :country, :with_cidr }
+    let(:country_without_cidr) { create :country }
+    let!(:count)  { count_first = Dir.glob(File.join("#{Rails.root}/app/assets/downloads/", "**", "*")).select{ |file| File.file?(file) }.count }
+
+    it "if country has cidr" do  
+      expect(country.generate_cidr_file).to eq "Yes"
+
+      count_after_action = Dir.glob(File.join("#{Rails.root}/app/assets/downloads/", "**", "*")).select{ |file| File.file?(file) }.count
+      expect(count_after_action).to eq count + 1 
+      File.delete("#{Rails.root}/app/assets/downloads/#{country.short_name}.cidr")
+    end
+
+    it "if country has no cidr" do    
+      expect(country_without_cidr.generate_cidr_file).to eq "No"
+
+      count_after_action = Dir.glob(File.join("#{Rails.root}/app/assets/downloads/", "**", "*")).select{ |file| File.file?(file) }.count
+      expect(count_after_action).to eq count
+    end
+  end
+
   describe '#scan_open_ports' do
     let(:country_with_cidr) { create :country, :with_cidr }
     let(:type_scan) { "scan_open_ports" }

@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    title
+      | AutoScan
+    meta[name="viewport" content="width=device-width,initial-scale=1"]
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_pack_tag 'application', 'data-turbolinks-track': 'reload'
+  body class="container d-flex flex-column"
+    div class="mt-5"
+      = render 'shared/header'
+    div class="mt-5 flash-messages"
+      = render 'shared/flashes'
+    div
+      = yield
