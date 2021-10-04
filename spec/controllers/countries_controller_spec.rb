@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe CountriesController, type: :controller do
   let(:country) { create :country }
+  let(:user) { create :user }
 
   describe 'GET #index' do
     let(:countries) { create_list :country, 3}
@@ -29,6 +30,8 @@ RSpec.describe CountriesController, type: :controller do
   end
 
   describe 'GET #new' do
+    before { sign_in(user) }
+
     before { get :new}
 
     it 'assigns a new Country to @country' do
@@ -41,6 +44,8 @@ RSpec.describe CountriesController, type: :controller do
   end
 
   describe 'GET #edit' do
+    before { sign_in(user) }
+
     before { get :edit, params: { id: country } }
 
     it 'assigns the requested country to @country' do
@@ -53,6 +58,7 @@ RSpec.describe CountriesController, type: :controller do
   end
 
   describe 'POST #create' do
+    before { sign_in(user) }
     context 'With valid attribute' do
       it 'saves a new country in the database' do
         expect { post :create, params: { country: attributes_for(:country) } }.to change(Country, :count).by(1)
@@ -77,6 +83,7 @@ RSpec.describe CountriesController, type: :controller do
   end
 
   describe 'PATCH #update' do
+    before { sign_in(user) }
     context 'With valid attribute' do
       it 'assigns the requested country to @country' do
         patch :update, params: { id: country, country: attributes_for(:country) }
@@ -113,6 +120,8 @@ RSpec.describe CountriesController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
+    before { sign_in(user) }
+
     let!(:country) { create :country }
 
     it 'deletes the country' do
@@ -126,8 +135,9 @@ RSpec.describe CountriesController, type: :controller do
   end
 
   describe 'GET #get_cidr' do
+    before { sign_in(user) }
     context 'if cidr exist on site http://www.iwik.org/ipcountry/' do
-      before { get :get_cidr, params: { id: country } }
+      before { get :get_cidr, params: { id: country }, format: :js }
 
       it 'assigns the requested country to @country' do
         expect(assigns(:country)).to eq country
@@ -151,7 +161,7 @@ RSpec.describe CountriesController, type: :controller do
     context 'if cidr does not exist on site http://www.iwik.org/ipcountry/' do
       let(:non_existent_country) { create :country, :non_existent_country }
       
-      before { get :get_cidr, params: { id: non_existent_country } }
+      before { get :get_cidr, params: { id: non_existent_country }, format: :js }
 
       it 'fields cidr and date_cidr for the country continue to equal nil' do         
         expect(non_existent_country.date_cidr).to be_nil
@@ -165,7 +175,57 @@ RSpec.describe CountriesController, type: :controller do
 
   end
 
+  describe 'GET #download_cidr' do
+    let(:country_with_cidr) { create :country, :with_cidr }
+
+    before { sign_in(user) }
+    
+    after(:all) { delete_downloaded_file }
+
+    context 'if cidr for country received earlier' do      
+      it 'assigns the requested country to @country' do
+        get :download_cidr, params: { id: country_with_cidr }, format: :js
+        expect(assigns(:country)).to eq country_with_cidr
+      end
+
+      it 'call to generate_cidr_file function returns yes' do
+        get :download_cidr, params: { id: country_with_cidr }, format: :js
+        expect(country_with_cidr.generate_cidr_file).to eq 'Yes'
+      end
+
+      it "sends a file named '# {country.short_name}.cidr" do
+        expect(controller).to receive(:send_file).with("#{Rails.root}/app/assets/downloads/#{country_with_cidr.short_name}.cidr").and_call_original
+        get :download_cidr, params: { id: country_with_cidr }, format: :js
+      end
+    end
+
+    context 'if cidr for country eq nil' do
+      before { get :download_cidr, params: { id: country }, format: :js }
+
+      it 'assigns the requested country to @country' do
+        get :download_cidr, params: { id: country }, format: :js
+        expect(assigns(:country)).to eq country
+      end
+
+      it 'call to generate_cidr_file function returns no' do
+        get :download_cidr, params: { id: country }, format: :js
+        expect(country.generate_cidr_file).to eq 'No'
+      end
+
+      it "does not send file" do
+        expect(controller).not_to receive(:send_file).with("#{Rails.root}/app/assets/downloads/#{country.short_name}.cidr").and_call_original
+        get :download_cidr, params: { id: country }, format: :js
+      end
+
+      it "render view download_cidr" do
+        get :download_cidr, params: { id: country }, format: :js
+        expect(response).to render_template :download_cidr
+      end
+    end
+  end
+
   describe 'GET #scan_open_ports' do
+    before { sign_in(user) }
     context 'if cidr for country not nul' do
       let(:country_with_cidr) { create :country, :with_cidr }
       before { get :scan_open_ports, params: { id: country_with_cidr } }

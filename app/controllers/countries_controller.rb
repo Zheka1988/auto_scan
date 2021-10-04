@@ -1,6 +1,10 @@
 class CountriesController < ApplicationController
-  before_action :load_country, only: [:show, :edit, :update, :destroy, :get_cidr, :scan_open_ports]
+  before_action :authenticate_user!, except: [:index, :show]
   
+  before_action :load_country, only: [:show, :edit, :update, :destroy, :get_cidr, :download_cidr, :scan_open_ports]
+  
+  protect_from_forgery except: [:get_cidr, :download_cidr]
+
   def index
     @countries = Country.all
   end
@@ -41,11 +45,22 @@ class CountriesController < ApplicationController
     message = @country.get_cidr
 
     if message == "Yes"
-      flash[:notice] = "CIDR for #{@country.name} was success download."
+      flash.now.notice = "CIDR for #{@country.name} was successfully reciewed."
     elsif message == "No"
-      flash[:alert] = "CIDR for #{@country.name} was not download."
+      flash.now.alert = "CIDR for #{@country.name} was not reciewed."
     elsif message.include?("Rescued")
-      flash[:alert] = "#{message}"
+      flash.now.alert= "#{message}"
+    end
+  end
+
+  def download_cidr
+    message = @country.generate_cidr_file
+
+    if message == "Yes"
+      send_file "#{Rails.root}/app/assets/downloads/#{@country.short_name}.cidr"
+      flash.now.notice = "CIDR file for #{@country.name} downloaded successfully"
+    else message == "No"
+      flash.now.notice = "First you need to get cidr for #{@country.name}"
     end
   end
   
