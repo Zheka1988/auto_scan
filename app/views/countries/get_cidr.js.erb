@@ -1,18 +1,13 @@
-<% if flash[:notice] || flash[:alert] %>
-    $(".flash-messages").html("<%= j render partial: 'shared/flashes' %>")
+<% if flash %>
+  $(".flash-messages").html("<%= j render partial: 'shared/flashes' %>")
 <% end %>
 
 <% if @country.date_cidr && @country.cidr %>
   $(".countries #country-<%= @country.id %> .cidr-country").html("")
   $(".countries #country-<%= @country.id %> .cidr-country").html("<div class='get-cidr align-items-start'><div class='d-inline-flex'><a href='<%= get_cidr_country_path(@country.id)%>', data-remote='true', class='link-get-cidr btn btn-light'>Update CIDR</a><div class='p-1'></div><a href='<%= download_cidr_country_path(@country.id)%>', class='link-download-file-cidr btn btn-success', target='_self'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-download' viewBox='0 0 16 16'><path d='M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z'/><path d='M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z'/></svg></a></div></div><div class='mt-1'><%= @country.date_cidr%></div>")
-<% else %>
-  $(".countries #country-<%= @country.id %> .cidr-country").html("<a href='<%= get_cidr_country_path(@country.id)%>', data-remote='true', class='link-get-cidr btn btn-light'>Get CIDR</a>")
 <% end %>
 
 <% if @country.status_nmap_scan == "Not started" && @country.date_last_nmap_scan == nil && @country.date_cidr && @country.cidr %>
   $(".countries #country-<%= @country.id %> .nmap-scan-op-country").html("")
-  $(".countries #country-<%= @country.id %> .nmap-scan-op-country").html("<div class='nmap-scan'> <a href='<%= scan_open_ports_country_path(@country) %>', data-remote='true', data-id='<%= @country.id %>', class='link-scan-op btn btn-light'>Scan open ports</a></div>")
-<% elsif @country.status_nmap_scan == "Not started" && @country.date_cidr == nil && @country.cidr == nil %>
-  $(".countries #country-<%= @country.id %> .nmap-scan-op-country").html("")
-  $(".countries #country-<%= @country.id %> .nmap-scan-op-country").html("<div class='nmap-scan-op'><p>First get CIDR</p>")
+  $(".countries #country-<%= @country.id %> .nmap-scan-op-country").html("<div class='nmap-scan-op'> <a href='<%= scan_open_ports_country_path(@country) %>', data-remote='true', data-id='<%= @country.id %>', class='link-scan-op btn btn-light'>Scan open ports</a></div>")
 <% end %>

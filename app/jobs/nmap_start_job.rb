@@ -4,10 +4,11 @@ class NmapStartJob < ApplicationJob
   after_perform do |job|
     country = job.arguments.first
     type_scan = job.arguments.second
+    Country.where(short_name: country.short_name).update(status_nmap_scan: "Completed successfully", date_last_nmap_scan: Date.today)
     file = define_file(country, type_scan)
-
+    
     parse_result_xml(country, file, type_scan)
-    # delete_file(file)
+    delete_file(file)
   end
 
   def perform(country, type_scan, ports, targets)
@@ -27,7 +28,6 @@ class NmapStartJob < ApplicationJob
 
   def delete_file(file)
     FileUtils.rm_r file
-    # FileUtils.rm_r Rails.root.join("results/#{country.short_name}/#{country.short_name}_anonymous_rez.xml")
   end
 
   def define_file(country, type_scan)
@@ -50,23 +50,6 @@ class NmapStartJob < ApplicationJob
           end
         end
       end
-
-    elsif type_scan == "scan_nse_script"
-      # Nmap::XML.new(file) do |xml|
-      #   xml.each_host do |host|
-      #     host.each_port do |port|
-      #       port.scripts.each do |name,output|
-      #         result = Result.find_by(country_id: country.id, ip: host.ip.chomp)
-      #         lines = []
-      #         output.each_line do |line|
-      #           lines << line
-      #         end
-      #         result.ftp_anonymous = lines.join
-      #         result.save!
-      #       end
-      #     end
-      #   end
-      # end
     end
   end  
 end

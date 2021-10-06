@@ -28,6 +28,12 @@ tr id="country-#{country.id}" class="center"
           p= "First get CIDR"
         - elsif country.status_nmap_scan == "Not started" && country.date_cidr && country.cidr &&  country.date_last_nmap_scan == nil     
           = link_to "Scan open ports", scan_open_ports_country_path(country), class: "link-scan-op btn btn-light", remote: true, data: {id: country.id} 
+        - elsif country.status_nmap_scan == "In process"
+          h4 class="text-success" In process
+        - elsif country.status_nmap_scan == "Completed successfully" && country.date_last_nmap_scan && country.date_cidr && country.cidr
+          = link_to "New scan open ports", scan_open_ports_country_path(country), class: "link-scan-op btn btn-light", remote: true, data: {id: country.id}
+          div class="mt-1"
+            = country.date_last_nmap_scan  
   - else
     td class="cidr-country text-center"
       div class="align-items-start"

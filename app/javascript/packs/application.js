@@ -7,12 +7,8 @@ import Rails from "@rails/ujs"
 import Turbolinks from "turbolinks"
 import * as ActiveStorage from "@rails/activestorage"
 import "channels"
-<<<<<<< HEAD
-import "../stylesheets/application";
-=======
 import '../js/bootstrap_js_files.js'
 import 'jquery'
->>>>>>> get_cidr
 
 Rails.start()
 Turbolinks.start()

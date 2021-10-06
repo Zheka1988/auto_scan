@@ -1,0 +1,8 @@
+<% if flash %>
+    $(".flash-messages").html("<%= j render partial: 'shared/flashes' %>");
+<% end %>
+
+<% if @country.date_last_nmap_scan && @country.status_nmap_scan == "Completed successfully" && @country.date_cidr && @country.cidr %>
+  $(".countries #country-<%= @country.id %> .nmap-scan-op-country").html("")
+  $(".countries #country-<%= @country.id %> .nmap-scan-op-country").html("<div class='masscan'><a href='<%= scan_open_ports_country_path(@country) %>', data-remote='true', data-id='<%= @country.id %>', class='link-scan-op btn btn-light'>New scan open ports</a><p><%= @country.date_last_nmap_scan%></p></div>")
+<% end %>

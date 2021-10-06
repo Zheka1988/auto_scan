@@ -3,10 +3,10 @@ class CountriesController < ApplicationController
   
   before_action :load_country, only: [:show, :edit, :update, :destroy, :get_cidr, :download_cidr, :scan_open_ports]
   
-  protect_from_forgery except: [:get_cidr, :download_cidr]
+  protect_from_forgery except: [:get_cidr, :download_cidr, :scan_open_ports]
 
   def index
-    @countries = Country.all
+    @countries = Country.all.order("name ASC")
   end
 
   def show
@@ -47,9 +47,9 @@ class CountriesController < ApplicationController
     if message == "Yes"
       flash.now.notice = "CIDR for #{@country.name} was successfully reciewed."
     elsif message == "No"
-      flash.now.alert = "CIDR for #{@country.name} was not reciewed."
+      flash.now.notice = "CIDR for #{@country.name} was not reciewed."
     elsif message.include?("Rescued")
-      flash.now.alert= "#{message}"
+      flash.now.notice = "#{message}."
     end
   end
 
@@ -58,18 +58,19 @@ class CountriesController < ApplicationController
 
     if message == "Yes"
       send_file "#{Rails.root}/app/assets/downloads/#{@country.short_name}.cidr"
-      flash.now.notice = "CIDR file for #{@country.name} downloaded successfully"
+      flash.now.notice = "CIDR file for #{@country.name} downloaded successfully."
     else message == "No"
-      flash.now.notice = "First you need to get cidr for #{@country.name}"
+      flash.now.notice = "First you need to get cidr for #{@country.name}."
     end
   end
   
   def scan_open_ports
     if @country.cidr && @country.date_cidr
       @country.run_nmap("scan_open_ports")
-      flash[:notice] =  "Masscan for #{@country.name} has been launched."
+      # flash[:notice] = "Open ports scan for #{@country.name} has been successfully launched."
+      # flash.now.notice =  "Open ports scan for #{@country.name} completed."
     else
-      flash[:notice] =  "CIDR for #{@country.name} was not found. First download cidr."
+      flash.now.notice = "CIDR for #{@country.name} was not found. First download cidr."
     end
   end
 

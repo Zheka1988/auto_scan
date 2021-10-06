@@ -228,7 +228,7 @@ RSpec.describe CountriesController, type: :controller do
     before { sign_in(user) }
     context 'if cidr for country not nul' do
       let(:country_with_cidr) { create :country, :with_cidr }
-      before { get :scan_open_ports, params: { id: country_with_cidr } }
+      before { get :scan_open_ports, params: { id: country_with_cidr }, format: :js }
 
       it 'assigns the requested country to @country' do
         expect(assigns(:country)).to eq country_with_cidr  
@@ -250,7 +250,7 @@ RSpec.describe CountriesController, type: :controller do
     end
 
     context 'if cidr for country eq nul' do
-      before { get :scan_open_ports, params: { id: country } }
+      before { get :scan_open_ports, params: { id: country }, format: :js }
       
       it 'assigns the requested country to @country' do
         expect(assigns(:country)).to eq country  
