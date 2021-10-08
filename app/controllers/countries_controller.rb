@@ -65,9 +65,9 @@ class CountriesController < ApplicationController
   end
   
   def scan_open_ports
-    if @country.cidr && @country.date_cidr
+    if @country.cidr && @country.date_cidr && @country.status_nmap_scan !=  "In process"
       @country.run_nmap("scan_open_ports")
-      # flash[:notice] = "Open ports scan for #{@country.name} has been successfully launched."
+      flash.now.notice = "Open ports scan for #{@country.name} has been successfully launched."
       # flash.now.notice =  "Open ports scan for #{@country.name} completed."
     else
       flash.now.notice = "CIDR for #{@country.name} was not found. First download cidr."

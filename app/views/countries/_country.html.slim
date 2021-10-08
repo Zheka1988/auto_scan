@@ -1,7 +1,6 @@
 tr id="country-#{country.id}" class="center"
   td class="country-name"
-    p= country.name
-  
+    = link_to country.name, country_ip_addresses_path(country.id), class: "show-ip-adresses-country text-decoration-none text-light"  
   td class="short-name-country text-center"
     p= country.short_name
 

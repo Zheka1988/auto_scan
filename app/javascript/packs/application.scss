@@ -1,4 +1,13 @@
 // inside app/frontend/packs/application.scss  
+a.country-ip-addresses-link {
+  color: #7c7c7c;
+}
+a.country-ip-addresses-link:hover {
+  color: #2c2c2c;
+}
 
+a.show-ip-adresses-country:hover {
+  padding: 5px 10px;
+}
 // Import Bootstrap v5  
 @import "~bootstrap/scss/bootstrap";  

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_28_091711) do
+ActiveRecord::Schema.define(version: 2021_10_07_122152) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,23 @@ ActiveRecord::Schema.define(version: 2021_09_28_091711) do
     t.string "status_nmap_scan", default: "Not started"
   end
 
+  create_table "ip_addresses", force: :cascade do |t|
+    t.bigint "country_id", null: false
+    t.string "ip"
+    t.boolean "port_21", default: false
+    t.boolean "port_22", default: false
+    t.boolean "port_443", default: false
+    t.boolean "port_139", default: false
+    t.boolean "port_445", default: false
+    t.boolean "port_3389", default: false
+    t.boolean "port_80", default: false
+    t.boolean "port_8080", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.date "date_last_scan"
+    t.index ["country_id"], name: "index_ip_addresses_on_country_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -38,4 +55,5 @@ ActiveRecord::Schema.define(version: 2021_09_28_091711) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "ip_addresses", "countries"
 end

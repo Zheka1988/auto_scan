@@ -13,5 +13,8 @@ Rails.application.routes.draw do
       get 'scan_open_ports'
       get 'download_cidr'
     end
+    resources :ip_addresses, shallow: true, only: [:index]
   end
+
+
 end

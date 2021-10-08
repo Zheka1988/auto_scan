@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Country, type: :model do
+  it { should have_many(:ip_addresses) }
+
   it { should validate_presence_of(:name) }
   it { should validate_presence_of(:short_name) }
   it { should validate_length_of(:short_name).is_equal_to(2) }

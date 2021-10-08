@@ -1,4 +1,6 @@
-class Country < ApplicationRecord 
+class Country < ApplicationRecord
+  has_many :ip_addresses
+
   validates :name, :short_name, presence: true
   validates :short_name, length: { is: 2 }
   validates_inclusion_of :status_nmap_scan, in: ["In process", "Completed successfully", "Not started", "Completed with error(s)"]
