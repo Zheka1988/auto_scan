@@ -4,7 +4,11 @@ class NmapStartJob < ApplicationJob
   after_perform do |job|
     country = job.arguments.first
     type_scan = job.arguments.second
-    Country.where(short_name: country.short_name).update(status_nmap_scan: "Completed successfully", date_last_nmap_scan: Date.today)
+    if type_scan == "scan_open_ports"
+      Country.where(short_name: country.short_name).update(status_nmap_scan: "Completed successfully", date_last_nmap_scan: Date.today)
+    elsif type_scan == "ftp-anonymous"
+      Country.where(short_name: country.short_name).update(scan_ftp_status: "Completed successfully")
+    end
     file = define_file(country, type_scan)
     
     parse_result_xml(country, file, type_scan)
@@ -15,11 +19,13 @@ class NmapStartJob < ApplicationJob
     Nmap::Program.sudo_scan do |nmap|
       nmap.verbose = true
       nmap.syn_scan = true   
-      nmap.xml = "#{Rails.root}/results/#{country.short_name}/#{country.short_name}_open_ports.xml"
       nmap.targets = targets
-
+      nmap.ports = ports
       if type_scan == "scan_open_ports"
-        nmap.ports = ports
+        nmap.xml = "#{Rails.root}/results/#{country.short_name}/#{country.short_name}_open_ports.xml"
+      elsif type_scan == "ftp-anonymous"
+        nmap.xml = "#{Rails.root}/results/#{country.short_name}/#{country.short_name}_ftp_anonymous.xml"
+        nmap.script = "ftp-anon"
       end
     end
   end
@@ -33,6 +39,8 @@ class NmapStartJob < ApplicationJob
   def define_file(country, type_scan)
     if type_scan == "scan_open_ports"
       "#{Rails.root}/results/#{country.short_name}/#{country.short_name}_open_ports.xml"
+    elsif type_scan == "ftp-anonymous"
+      "#{Rails.root}/results/#{country.short_name}/#{country.short_name}_ftp_anonymous.xml"
     end
   end
 
@@ -48,6 +56,19 @@ class NmapStartJob < ApplicationJob
           end
           unless open_ports.empty?
             add_results_in_db(country, host.ip, open_ports)
+          end
+        end
+      end
+    elsif type_scan == "ftp-anonymous"
+      Nmap::XML.new(file) do |xml|
+        xml.each_host do |host|
+          host.each_port do |port|
+            port.scripts.each do |name, output|
+              print host
+              output.each_line do |line|
+                puts line
+              end
+            end
           end
         end
       end

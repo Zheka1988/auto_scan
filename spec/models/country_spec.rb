@@ -7,6 +7,7 @@ RSpec.describe Country, type: :model do
   it { should validate_presence_of(:short_name) }
   it { should validate_length_of(:short_name).is_equal_to(2) }
   it { should validate_inclusion_of(:status_nmap_scan).in_array(["In process", "Completed successfully", "Not started", "Completed with error(s)"])}
+  it { should validate_inclusion_of(:scan_ftp_status).in_array(["In process", "Completed successfully", "Not started", "Completed with error(s)"])}
 
   describe 'get_cidr' do
     let(:country) { create :country }
@@ -42,7 +43,7 @@ RSpec.describe Country, type: :model do
     end
   end
 
-  describe '#scan_open_ports' do
+  describe '#run_nmap' do
     let(:country_with_cidr) { create :country, :with_cidr }
     let(:type_scan) { "scan_open_ports" }
     let(:cidr_array) { country_with_cidr.cidr.split(",") }

@@ -1,0 +1,8 @@
+<% if flash %>
+    $(".flash-messages").html("<%= j render partial: 'shared/flashes' %>");
+<% end %>
+
+<% if @country.date_last_nmap_scan && @country.status_nmap_scan == "Completed successfully" && @country.date_cidr && @country.cidr %>
+  $(".scan-ftp").html("")
+  $(".scan-ftp").html("<h3>Ftp Scan in Process</h3>")
+<% end %>

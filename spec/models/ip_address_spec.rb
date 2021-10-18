@@ -1,9 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe IpAddress, type: :model do
+  let (:country) { create :country }
+  
   it { should belong_to(:country) }
-
-  subject { create(:ip_address) }
+  
+  subject { create(:ip_address, country: country) }
   it { should validate_uniqueness_of(:ip).scoped_to(:country_id).case_insensitive }
   it { should validate_presence_of(:ip) }
   it { should allow_value('8.8.8.8').for(:ip) }

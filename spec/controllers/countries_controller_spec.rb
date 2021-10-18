@@ -243,6 +243,11 @@ RSpec.describe CountriesController, type: :controller do
         country_with_cidr.reload
         expect(country_with_cidr.status_nmap_scan).to eq "In process"
       end
+
+      it 'change date_last_nmap_scan for country' do
+        country_with_cidr.reload
+        expect(country_with_cidr.date_last_nmap_scan).to eq Date.today
+      end
       
       it 'render view scan_open_ports' do
         expect(response).to render_template :scan_open_ports
@@ -270,6 +275,46 @@ RSpec.describe CountriesController, type: :controller do
         expect(response).to render_template :scan_open_ports
       end
 
+    end
+  end
+
+  describe 'GET #scan_ftp_anonymous' do
+    before { sign_in(user) }
+
+    context 'if country has scanned ip addresses' do
+      let!(:ip_addresses) { create_list :ip_address, 3, :open_ports, country: country }
+      before { get :scan_ftp_anonymous, params: { id: country }, format: :js }
+
+      it 'assigns the requested country to @country' do
+        expect(assigns(:country)).to eq country
+      end
+      
+      it 'change scan_ftp_status for country on In process' do
+        country.reload
+        expect(country.scan_ftp_status).to eq "In process"
+      end
+
+      it 'render view scan_open_ports' do
+        expect(response).to render_template :scan_ftp_anonymous
+      end
+    end
+
+    context 'if country does not have scanned ip addresses' do
+      let(:country_without_ip_addresses) { create :country }
+      before { get :scan_ftp_anonymous, params: { id: country_without_ip_addresses }, format: :js }
+      
+      it 'assigns the requested country to @country' do
+        expect(assigns(:country)).to eq country_without_ip_addresses
+      end
+
+      it 'not change scan_ftp_status for country on In process' do
+        country_without_ip_addresses.reload
+        expect(country_without_ip_addresses.scan_ftp_status).to eq "Not started"
+      end
+
+      it 'render view scan_open_ports' do
+        expect(response).to render_template :scan_ftp_anonymous
+      end      
     end
   end
 end

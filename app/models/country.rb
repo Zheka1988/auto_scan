@@ -3,7 +3,7 @@ class Country < ApplicationRecord
 
   validates :name, :short_name, presence: true
   validates :short_name, length: { is: 2 }
-  validates_inclusion_of :status_nmap_scan, in: ["In process", "Completed successfully", "Not started", "Completed with error(s)"]
+  validates_inclusion_of :status_nmap_scan, :scan_ftp_status, in: ["In process", "Completed successfully", "Not started", "Completed with error(s)"]
 
   attr_reader :uri, :ports, :status
   
@@ -60,15 +60,27 @@ class Country < ApplicationRecord
   end
 
   def run_nmap(type_scan)
-    self.date_last_nmap_scan = Date.today
-    self.status_nmap_scan = self.status[:in_process]
-    self.save!
-
+    targets = []
+    ports = []
     create_country_dir
 
-    targets = self.cidr_to_array("cidr")
-    if targets && self.ports
-      NmapStartJob.perform_later(self, type_scan, self.ports, targets)
+    if type_scan == "scan_open_ports"
+      self.date_last_nmap_scan = Date.today
+      self.status_nmap_scan = self.status[:in_process]
+      self.save!
+     
+      targets = self.cidr_to_array("cidr")
+      ports = self.ports
+    elsif type_scan == "ftp-anonymous"
+      self.scan_ftp_status = self.status[:in_process]
+      self.save!
+
+      targets = self.ip_addresses.where(port_21: true).pluck(:ip)
+      ports << 21
+    end
+
+    if targets && ports
+      NmapStartJob.perform_later(self, type_scan, ports, targets)
     else
       flash[:notice] = "No port(s) or target specified."
     end

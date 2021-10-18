@@ -5,7 +5,8 @@ FactoryBot.define do
     cidr { nil }
     date_cidr { nil }
     date_last_nmap_scan { nil }
-    status_nmap_scan { 'Not started'}
+    status_nmap_scan { 'Not started' }
+    scan_ftp_status { 'Not started' }
 
     trait :invalid do
       short_name { "KZ_KZ" }
