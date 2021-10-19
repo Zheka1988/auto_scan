@@ -10,6 +10,7 @@ div class="card panel-action"
   div class="card-body panel-action-body"
     .scan-ftp
       - if @country.scan_ftp_status == "Not started" || @country.scan_ftp_status == "Completed successfully"
-        = link_to "FTP-Anonymous", scan_ftp_anonymous_country_path(@country.id), class: "ftp-anonymous-scan-link btn btn-secondary", remote: true
+        = link_to "FTP-Anonymous", scan_ftp_anonymous_country_path(@country), class: "ftp-anonymous-scan-link btn btn-secondary", remote: true
       - elsif @country.scan_ftp_status == "In process"
-        h3= "Ftp Scan in Process"
+        p class="text-success"
+          = "Ftp Scan in Process"

@@ -2,7 +2,10 @@
     $(".flash-messages").html("<%= j render partial: 'shared/flashes' %>");
 <% end %>
 
-<% if @country.date_last_nmap_scan && @country.status_nmap_scan == "Completed successfully" && @country.date_cidr && @country.cidr %>
+<% if @country.scan_ftp_status == "In process" %>
   $(".scan-ftp").html("")
-  $(".scan-ftp").html("<h3>Ftp Scan in Process</h3>")
+  $(".scan-ftp").html("<p class='text-success'>Ftp Scan in Process</p>")
+<% elsif @country.scan_ftp_status == "Not started" && @country.scan_ftp_status == "Completed successfully" %>
+  $(".scan-ftp").html("")
+  $(".scan-ftp").html("<a href='<%= scan_ftp_anonymous_country_path(@country) %>', data-remote='true', class='ftp-anonymous-scan-link btn btn-secondary'>FTP-Anonymous</a>")  
 <% end %>
