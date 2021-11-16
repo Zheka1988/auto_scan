@@ -23,7 +23,7 @@ feature 'User can view ip addresses', %q{
     end
   end
   
-  scenario 'Unauthenticate user' do
+  scenario 'Unauthenticate user can not view list ip adresses' do
     visit countries_path(ip_address.country.id)
     click_on "#{country.name}"
     expect(page).to have_content "You need to sign in or sign up before continuing."

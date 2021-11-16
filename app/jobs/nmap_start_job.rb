@@ -62,14 +62,19 @@ class NmapStartJob < ApplicationJob
     elsif type_scan == "ftp-anonymous"
       Nmap::XML.new(file) do |xml|
         xml.each_host do |host|
+          lines = []
           host.each_port do |port|
             port.scripts.each do |name, output|
-              print host
               output.each_line do |line|
-                puts line
+                lines << line
               end
             end
           end
+          unless lines.empty?
+            country_id = Country.find(country.id).id
+            ip_address_id = IpAddress.find_by(ip: host.ip).id
+            FtpResult.create!(country_id: country_id, ip_address_id: ip_address_id, results: lines)
+          end          
         end
       end
     end

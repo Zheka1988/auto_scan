@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Country, type: :model do
   it { should have_many(:ip_addresses) }
+  it { should have_many(:ftp_results) }
 
   it { should validate_presence_of(:name) }
   it { should validate_presence_of(:short_name) }
@@ -29,7 +30,7 @@ RSpec.describe Country, type: :model do
 
     it "if country has cidr" do  
       expect(country.generate_cidr_file).to eq "Yes"
-
+      
       count_after_action = Dir.glob(File.join("#{Rails.root}/app/assets/downloads/", "**", "*")).select{ |file| File.file?(file) }.count
       expect(count_after_action).to eq count + 1 
       File.delete("#{Rails.root}/app/assets/downloads/#{country.short_name}.cidr")

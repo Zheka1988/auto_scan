@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       get 'scan_ftp_anonymous'
     end
     resources :ip_addresses, shallow: true, only: [:index]
+    resources :ftp_results, shallow: true, only: [:index]
   end
 
 

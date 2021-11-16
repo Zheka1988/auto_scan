@@ -1,6 +1,7 @@
 class Country < ApplicationRecord
   has_many :ip_addresses
-
+  has_many :ftp_results
+  
   validates :name, :short_name, presence: true
   validates :short_name, length: { is: 2 }
   validates_inclusion_of :status_nmap_scan, :scan_ftp_status, in: ["In process", "Completed successfully", "Not started", "Completed with error(s)"]

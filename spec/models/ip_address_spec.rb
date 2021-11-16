@@ -4,6 +4,7 @@ RSpec.describe IpAddress, type: :model do
   let (:country) { create :country }
   
   it { should belong_to(:country) }
+  it { should have_many(:ftp_results) }
   
   subject { create(:ip_address, country: country) }
   it { should validate_uniqueness_of(:ip).scoped_to(:country_id).case_insensitive }
