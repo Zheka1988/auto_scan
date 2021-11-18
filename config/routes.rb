@@ -18,5 +18,9 @@ Rails.application.routes.draw do
     resources :ftp_results, shallow: true, only: [:index]
   end
 
-
+  resources :ftp_results, only: [] do
+    member do
+      patch 'added_description'
+    end
+  end
 end

@@ -73,7 +73,14 @@ class NmapStartJob < ApplicationJob
           unless lines.empty?
             country_id = Country.find(country.id).id
             ip_address_id = IpAddress.find_by(ip: host.ip).id
-            FtpResult.create!(country_id: country_id, ip_address_id: ip_address_id, results: lines)
+            ip = IpAddress.find_by(ip: host.ip.chomp)
+            ftp_result = FtpResult.find_by(ip_address_id: ip.id, country_id: country_id)
+            if ftp_result
+              ftp_result.results = lines
+              ftp_result.save!
+            else
+              FtpResult.create!(country_id: country_id, ip_address_id: ip_address_id, results: lines)
+            end
           end          
         end
       end

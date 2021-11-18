@@ -4,5 +4,19 @@ tr id="ip-#{ftp_result.id}" class="text-center"
   td class="ftp-results"
     p= ftp_result.results
   td class="ftp-description"
-    p= ftp_result.description
+    div class="col p-2"
+      div class="row d-flex justify-content-center"
+        div
+          = link_to "Description", "#", remote: true, class: "added-ftp-description-link btn btn-light btn-sm w-50", data: { ftp_result_id: ftp_result.id }
+      div class="row"
+        p= ftp_result.description
+    
+tr class="hidden" id="added-ftp-description-#{ftp_result.id}"
+  td colspan="3"
+    = form_with model: ftp_result, url: added_description_ftp_result_path(ftp_result), class: 'form-group', local: false, html: { id: "ftp-result-#{ftp_result.id}" } do |f|
+      div class="d-flex justify-content-center p-2"
+        div
+          = f.label :description, 'Description'
+          = f.text_area :description, class: "form-control m-1", size: "50x5"
+          = f.submit 'Add', class: 'btn btn-primary btn-sm w-25'
     

@@ -1,0 +1,6 @@
+<% if !@ftp_result.errors.present? %>
+  var element = document.getElementById("added-ftp-description-<%= @ftp_result.id %>");
+  element.classList.add("hidden");
+  $("#ip-<%= @ftp_result.id %> .ftp-description").html('');
+  $("#ip-<%= @ftp_result.id %> .ftp-description").html("<div class='col p-2'><div class='row d-flex justify-content-center'><a href='#', data-remote='true', class='added-ftp-description-link btn btn-light btn-sm w-50', data-ftp-result-id='<%= @ftp_result.id %>'>Description</a></div> <div class='row'><p><%= @ftp_result.description %></p></div></div>");
+<% end %>
