@@ -9,7 +9,7 @@ class Country < ApplicationRecord
   attr_reader :uri, :ports, :status
   
   def ports
-    @ports = [ 21, 22, 80, 8080, 139, 443, 445, 3389 ]
+    @ports = [ 21, 22, 25, 80, 8080, 139, 443, 445, 3389 ]
   end
 
   def status
@@ -133,5 +133,6 @@ class Country < ApplicationRecord
 
   def create_country_dir
     Dir.mkdir("results/#{self.short_name}") unless Dir.exist?("results/#{self.short_name}")
+    File.new("#{Rails.root}/results/#{self.short_name}/#{self.short_name}_open_ports.xml", "w+")
   end
 end
