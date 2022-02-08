@@ -10,6 +10,8 @@ import "channels"
 import '../js/bootstrap_js_files.js'
 import 'jquery'
 
+require("../stylesheets/application.scss")
+
 Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
