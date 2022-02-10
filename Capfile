@@ -19,6 +19,7 @@ require "capistrano/sidekiq"
 # or
 require "capistrano/scm/git"
 install_plugin Capistrano::SCM::Git
+install_plugin Capistrano::Sidekiq::Systemd
 
 # Include tasks from other gems included in your Gemfile
 #

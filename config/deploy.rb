@@ -8,6 +8,7 @@ set :repo_url, "git@github.com:Zheka1988/auto_scan.git"
 set :deploy_to, "/home/deployer/auto_scan"
 set :deploy_user, "deployer"
 
+set :pty,  false
 # Default value for :linked_files is []
 append :linked_files, "config/database.yml", "config/master.key"
 
