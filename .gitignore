@@ -33,8 +33,8 @@
 /config/master.key
 /config/database.yml
 
-/results/*
-!/results/.keep
+#/results/*
+#!/results/.keep
 
 /public/packs
 /public/packs-test
