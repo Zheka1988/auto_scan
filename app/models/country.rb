@@ -81,7 +81,7 @@ class Country < ApplicationRecord
     end
 
     if targets && ports
-      NmapStartJob.perform_now(self, type_scan, ports, targets)
+      NmapStartJob.perform_later(self, type_scan, ports, targets)
     else
       flash[:notice] = "No port(s) or target specified."
     end
